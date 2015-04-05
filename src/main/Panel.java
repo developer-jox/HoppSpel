@@ -26,7 +26,7 @@ public class Panel extends javax.swing.JPanel {
     //saker till spelaren
     Player player = new Player();
 
-    //håller reda på hur många gånger man hoppat sedan man duddade mark/platform
+    //håller reda på hur många gånger man hoppat sedan man nuddade mark/platform
     int nJumps = 0;
 
     //saker till platformar
