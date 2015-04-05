@@ -18,93 +18,104 @@ package ensak;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.color.ColorSpace;
 
 /**
  *
  * @author jeseri767
  */
 public class Spelare {
+
     int x = 100;
     int y = 300;
-    
+
     int vx;
     int vy;
-    
+
     int r = 10;
-    
+
     Color c = new Color(0, 0, 0);
-    
-    
+
     public Spelare() {
-        
+
     }
+
     //Hastigheter
-    public void setvx(int talIn){
-        vx=talIn;
+
+    public void setvx(int talIn) {
+        vx = talIn;
     }
-    public void setvy(int talIn){
-        vy=talIn;
+
+    public void setvy(int talIn) {
+        vy = talIn;
     }
-    public void addvx(int talIn){
-        vx+=talIn;
+
+    public void addvx(int talIn) {
+        vx += talIn;
     }
-    public void addvy(int talIn){
-        vy+=talIn;
+
+    public void addvy(int talIn) {
+        vy += talIn;
     }
-    public int getvy(){
+
+    public int getvy() {
         return vy;
     }
-    public int getvx(){
+
+    public int getvx() {
         return vx;
     }
-    public void move(){
+
+    public void move() {
         x += vx;
         y += vy;
     }
-    public void moveX(){
+
+    public void moveX() {
         x += vx;
     }
-    public void moveY(){
+
+    public void moveY() {
         y += vy;
     }
+
     //positioner
-    public void setx(int talIn){
+
+    public void setx(int talIn) {
         x = talIn;
     }
-    public void sety(int talIn){
+
+    public void sety(int talIn) {
         y = talIn;
     }
-    
-    public int gety(){
+
+    public int gety() {
         return y;
     }
-    public int getx(){
+
+    public int getx() {
         return x;
     }
-    public void setColor(Color a){
+
+    public void setColor(Color a) {
         c = a;
     }
-    public void paint(Graphics g){
+
+    public void paint(Graphics g) {
         g.setColor(c);
-        
-        if(x>500){
-            x=0;
+
+        if (x > 500) {
+            x = 0;
+        } else if (x > 500 - r) {
+
+            g.fillOval((x - r) - 500, y - 2 * r, 2 * r, 2 * r);
+        } else if (x < 0) {
+            x = 500;
+
+        } else if (x - r < 0) {
+            g.fillOval((x - r) + 500, y - 2 * r, 2 * r, 2 * r);
         }
-        else if(x>500-r){
-            
-            g.fillOval((x-r)-500, y-2*r, 2*r, 2*r);
-        }
-        else if(x<0){
-            x=500;
-            
-        }
-        else if(x-r<0){
-            g.fillOval((x-r)+500, y-2*r, 2*r, 2*r);
-        }
-        
-        g.fillOval(x-r, y-2*r, 2*r, 2*r);
-        
-       
+
+        g.fillOval(x - r, y - 2 * r, 2 * r, 2 * r);
+
     }
 }

@@ -15,153 +15,147 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ensak;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
-import java.util.Random;
-
 
 public class MinPanel extends javax.swing.JPanel {
-    
+
     //Variabler
-    
     //saker till spelaren
     Spelare sp = new Spelare();
-    
+
     //håller reda på hur många gånger man hoppat sedan man duddade mark/platform
-    int hopp = 0; 
-    
+    int hopp = 0;
+
     //saker till platformar
     int antalPlatformar = 40;
     Platform[] p = new Platform[antalPlatformar];
     int lowestPlatform = 0;
-    int highestPlatform = antalPlatformar-1;
-    
+    int highestPlatform = antalPlatformar - 1;
+
     //annat
     long time;
     int score = 0;
-    Color bakgrund = new Color(130,180,250);
-    
+    Color bakgrund = new Color(130, 180, 250);
+
     //mer saker
     Monster mons = new Monster();
-    
+
     Dekorationer dek = new Dekorationer();
-    
+
     Boolean gameOver = false;
-    
-    
+
     public MinPanel() {
         initComponents();
         start();
     }
-    
-    
+
     //loopar allt
-    void run(){
-        
+    void run() {
+
         this.setFocusable(true);
         dek.initClouds();
-        
-        while (!gameOver){
-            
+
+        while (!gameOver) {
+
             time = System.nanoTime();
             repaint();
-            
+
             HanteraPlatformer();
-            
+
             Collision();
-            
+
             Flytta();
-            
+
             Gravitation();
-            
-            
-            
+
             //ser till att programmet håller en stabil uppdateringsfrekvens
-            time = (System.nanoTime()-time)/1000000;
-                try {
-                    Thread.sleep(17-time);
-                } catch (InterruptedException ex) {
-                }
-                
-                
-                jLabel1.setText(Integer.toString(score));
+            time = (System.nanoTime() - time) / 1000000;
+            try {
+                Thread.sleep(17 - time);
+            } catch (InterruptedException ex) {
+            }
+
+            jLabel1.setText(Integer.toString(score));
 
         }
-        
+
     }
-    
+
     //ritar varje ny frame
     @Override
-    public void paint(Graphics g){
-        
+    public void paint(Graphics g) {
+
         //suddar och ritar om varje frame
         g.clearRect(0, 0, 1000, 1000);
-        
+
         super.setBackground(bakgrund);
         super.paintComponent(g);
-        
+
         dek.clouds(g);
-        
+
         for (int i = 0; i < antalPlatformar; i++) {
             p[i].paint(g);
         }
-        
+
         g.drawLine(0, 500, 500, 500);
         sp.paint(g);
-        
+
         mons.paint(g);
 
         dek.mark(g);
-        
+
         //ritar ut jlableln/poängräknaren
         super.paintChildren(g);
     }
-    
-    
+
     //slumpar ut saker vid start
-    private void start(){
-        
+    private void start() {
+
         //skapar plattformerna
         int highestY = 500;
         for (int i = 0; i < antalPlatformar; i++) {
             p[i] = new Platform(highestY);
             highestY = p[i].y;
         }
-        
-        
+
     }
-    
-    private void HanteraPlatformer(){
+
+    private void HanteraPlatformer() {
         //platform hantering. Kollar om spelaren står på en platform
         for (int i = 0; i < antalPlatformar; i++) {
-            if( sp.x > p[i].getX1() && sp.getx() < p[i].getX1()+p[i].getX2() &&
-                sp.y <= p[i].getY() && sp.gety() + sp.getvy() > p[i].getY()){
+            if (sp.x > p[i].getX1() && sp.getx() < p[i].getX1() + p[i].getX2()
+                    && sp.y <= p[i].getY() && sp.gety() + sp.getvy() > p[i].getY()) {
 
                 sp.setvy(0);
-                sp.sety(p[i].getY()-sp.getvy());
+                sp.sety(p[i].getY() - sp.getvy());
                 hopp = 0;
                 break;
             }
         }
-        
 
         //flyttar upp understa plattformen
-        if(p[lowestPlatform].y-500 > sp.y){
+        if (p[lowestPlatform].y - 500 > sp.y) {
             int highestY = p[highestPlatform].y;
             p[lowestPlatform].placeHighest(highestY);
             lowestPlatform++;
             highestPlatform++;
-            if(highestPlatform == antalPlatformar)highestPlatform = 0;
-            if(lowestPlatform == antalPlatformar)lowestPlatform = 0; 
+            if (highestPlatform == antalPlatformar) {
+                highestPlatform = 0;
+            }
+            if (lowestPlatform == antalPlatformar) {
+                lowestPlatform = 0;
+            }
         }
-        
+
     }
-    
-    private void Flytta(){
-        
+
+    private void Flytta() {
+
         //flyttar allt nedåt när man är högt upp
-        if(sp.y+sp.vy < 200){
+        if (sp.y + sp.vy < 200) {
             for (int i = 0; i < antalPlatformar; i++) {
                 p[i].y -= sp.vy;
             }
@@ -169,43 +163,41 @@ public class MinPanel extends javax.swing.JPanel {
             mons.moveY(sp.vy);
             sp.y = 200;
             score++;
-        }
-        else{
+        } else {
             sp.moveY();
         }
-        if(sp.y+500<mons.y){
+        if (sp.y + 500 < mons.y) {
             mons.moveUp(sp.y);
         }
-        
-        
+
         mons.moveX();
-        
+
         sp.moveX();
-        
+
     }
-    
-    private void Gravitation(){
+
+    private void Gravitation() {
         //hanterar gravitationen, stannar vid bottenlinjen
-        if(sp.gety() < 500) {
+        if (sp.gety() < 500) {
             sp.addvy(1);
-        }
-        else {
+        } else {
             sp.setvy(0);
             sp.sety(500);
             hopp = 0;
         }
     }
-    
-    private void Collision(){
-        
-        if(mons.inBounds(sp.x, sp.y) || mons.inBounds(sp.x, sp.y-2*sp.r)){
+
+    private void Collision() {
+
+        if (mons.inBounds(sp.x, sp.y) || mons.inBounds(sp.x, sp.y - 2 * sp.r)) {
             sp.setColor(Color.red);
             gameOver = true;
-        } 
-        else sp.setColor(Color.BLACK);
-        
+        } else {
+            sp.setColor(Color.BLACK);
+        }
+
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -245,18 +237,24 @@ public class MinPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_UP && hopp <= 1){
+        if (evt.getKeyCode() == KeyEvent.VK_UP && hopp <= 1) {
             sp.setvy(-14);
             hopp++;
+        } else if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
+            sp.setvx(-4);
+        } else if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
+            sp.setvx(4);
+        } else if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            sp.sety(sp.gety() + 1);
         }
-        else if (evt.getKeyCode() == KeyEvent.VK_LEFT)  sp.setvx(-4);
-        else if (evt.getKeyCode() == KeyEvent.VK_RIGHT) sp.setvx(4);
-        else if (evt.getKeyCode() == KeyEvent.VK_DOWN)  sp.sety(sp.gety()+1);
     }//GEN-LAST:event_formKeyPressed
 
     private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
-        if      (evt.getKeyCode() == KeyEvent.VK_LEFT  && sp.vx < 0) sp.setvx(0);
-        else if (evt.getKeyCode() == KeyEvent.VK_RIGHT && sp.vx > 0) sp.setvx(0);
+        if (evt.getKeyCode() == KeyEvent.VK_LEFT && sp.vx < 0) {
+            sp.setvx(0);
+        } else if (evt.getKeyCode() == KeyEvent.VK_RIGHT && sp.vx > 0) {
+            sp.setvx(0);
+        }
     }//GEN-LAST:event_formKeyReleased
 
 

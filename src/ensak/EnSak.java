@@ -15,18 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ensak;
-import java.awt.event.KeyListener;
-import  javax.swing.JFrame;
 
-
+import javax.swing.JFrame;
 
 public class EnSak extends JFrame {
 
-
     public static void main(String[] args) {
         new EnSak();
-        
-        
+
     }
 
     public EnSak() {
@@ -38,7 +34,7 @@ public class EnSak extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         panel.run();
-        
+
     }
-    
+
 }

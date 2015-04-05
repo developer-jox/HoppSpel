@@ -20,54 +20,49 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
-
 public class Monster {
-    
-    
-    
+
     int x = 100;
     int y = 100;
     int rX = 25;
     int rY = 10;
-    
+
     int vx = 2;
     int l;
-    
-    public Monster(){
-        
+
+    public Monster() {
+
     }
-    
+
     public void paint(Graphics g) {
         g.setColor(Color.red);
-        g.fillOval(x-rX, y-rY, 2*rX, 2*rY);
+        g.fillOval(x - rX, y - rY, 2 * rX, 2 * rY);
         g.setColor(Color.green);
-        g.fillOval(x+7, y-3, 5, 5);
-        g.fillOval(x-7, y-3, 5, 5);
+        g.fillOval(x + 7, y - 3, 5, 5);
+        g.fillOval(x - 7, y - 3, 5, 5);
     }
-    public void moveX(){
+
+    public void moveX() {
         x += vx;
-        if(x>500||x<0) vx = -vx;
+        if (x > 500 || x < 0) {
+            vx = -vx;
+        }
     }
-    
-    public void moveY(int v){
-        y-=v;
+
+    public void moveY(int v) {
+        y -= v;
     }
-    public void moveUp(int yIn){
+
+    public void moveUp(int yIn) {
         Random rand = new Random();
         y = yIn - (rand.nextInt((500 - 250) + 1) + 250);
         vx = rand.nextInt((5 - 1) + 1) + 1;
     }
 
     public boolean inBounds(int inX, int inY) {
-        return inX >= x-rX && inX <= x+rX &&
-                inY >= y-rY && inY <= y+rY;
-        
-    }
-    
-    
-    
-    
-    
+        return inX >= x - rX && inX <= x + rX
+                && inY >= y - rY && inY <= y + rY;
 
-    
+    }
+
 }

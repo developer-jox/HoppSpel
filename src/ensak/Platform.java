@@ -15,14 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package ensak;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
-
-
 public class Platform {
-    
+
     int y;
     int x1;
     int x2;
@@ -34,43 +33,48 @@ public class Platform {
         x1 = rand.nextInt((490 + 10) + 1) - 10;
         L = rand.nextInt((70 - 20) + 1) + 20;
         x2 = x1 + L;
-      
+
     }
-    
-    public void setY(int a){
+
+    public void setY(int a) {
         y = a;
     }
- 
-    public void setX1(int a){
+
+    public void setX1(int a) {
         x1 = a;
-        x2 = x1+L;
+        x2 = x1 + L;
     }
-    public int getX1(){
+
+    public int getX1() {
         return x1;
     }
-    public int getX2(){
+
+    public int getX2() {
         return x2;
     }
-    public int getY(){
+
+    public int getY() {
         return y;
     }
-    public int randomize(int a){
-        Random rand = new Random(); 
-        
+
+    public int randomize(int a) {
+        Random rand = new Random();
+
         y = a - rand.nextInt((100 - 10) + 1) + 10;
-        x1  = rand.nextInt((490 + 10) + 1) - 10;
+        x1 = rand.nextInt((490 + 10) + 1) - 10;
         L = rand.nextInt((60 - 10) + 1) + 10;
         x2 = x1 + L;
         return y;
     }
-    public void paint(Graphics g){
-        g.setColor(new Color(120,45,45));
-        g.drawLine(x1, y, (x1+x2), y);
-       
+
+    public void paint(Graphics g) {
+        g.setColor(new Color(120, 45, 45));
+        g.drawLine(x1, y, (x1 + x2), y);
+
         g.fillRect(x1, y, x2, 6);
     }
-    
-    public void placeHighest(int hY){
+
+    public void placeHighest(int hY) {
         Random rand = new Random();
         y = hY - (rand.nextInt((150 - 20) + 1) + 20);
         x1 = rand.nextInt((490 + 10) + 1) - 10;
