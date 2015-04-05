@@ -18,9 +18,12 @@ package main;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
+import javax.swing.JPanel;
 
-public class Panel extends javax.swing.JPanel {
+public class Panel extends JPanel {
 
     //Variabler
     //saker till spelaren
@@ -86,28 +89,29 @@ public class Panel extends javax.swing.JPanel {
     //ritar varje ny frame
     @Override
     public void paint(Graphics g) {
-
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         //suddar och ritar om varje frame
-        g.clearRect(0, 0, 1000, 1000);
+        g2.clearRect(0, 0, 1000, 1000);
 
         super.setBackground(background);
-        super.paintComponent(g);
+        super.paintComponent(g2);
 
-        dec.clouds(g);
+        dec.clouds(g2);
 
         for (int i = 0; i < nPlattform; i++) {
-            p[i].paint(g);
+            p[i].paint(g2);
         }
 
-        g.drawLine(0, 500, 500, 500);
-        player.paint(g);
+        g2.drawLine(0, 500, 500, 500);
+        player.paint(g2);
 
-        monster.paint(g);
+        monster.paint(g2);
 
-        dec.mark(g);
+        dec.mark(g2);
 
         //ritar ut jlableln/poängräknaren
-        super.paintChildren(g);
+        super.paintChildren(g2);
     }
 
     //slumpar ut saker vid start
