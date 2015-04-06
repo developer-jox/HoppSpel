@@ -23,62 +23,69 @@ import java.util.Random;
 public class Platform {
 
     int y;
-    int x1;
-    int x2;
-    int L;
+    int x;
+    int length;
+    int width;
+    boolean colTest = false, left = false;
 
-    public Platform(int hY) {
+    public Platform(int hY, int lWidth) {
+        width = lWidth;
         Random rand = new Random();
-        y = hY - (rand.nextInt((150 - 20) + 1) + 20);
-        x1 = rand.nextInt((490 + 10) + 1) - 10;
-        L = rand.nextInt((70 - 20) + 1) + 20;
-        x2 = x1 + L;
+        y = hY - (rand.nextInt((150 - 60) + 1) + 60);
+        x = rand.nextInt((490 + 10) + 1) - 10;
+        length = rand.nextInt((120 - 60) + 1) + 60;
+        if (x < 0) {
+            x = x + length;
+            left = true;
+            colTest = true;
+        } else if (x + length > lWidth) {
+            x = x - length;
+            left = false;
+            colTest = true;
+        } else {
+            colTest = false;
+        }
 
     }
-
-    public void setY(int a) {
-        y = a;
-    }
-
-    public void setX1(int a) {
-        x1 = a;
-        x2 = x1 + L;
-    }
-
     public int getX1() {
-        return x1;
+        return x;
     }
 
     public int getX2() {
-        return x2;
+        return length;
     }
 
     public int getY() {
         return y;
     }
 
-    public int randomize(int a) {
-        Random rand = new Random();
-
-        y = a - rand.nextInt((100 - 10) + 1) + 10;
-        x1 = rand.nextInt((490 + 10) + 1) - 10;
-        L = rand.nextInt((60 - 10) + 1) + 10;
-        x2 = x1 + L;
-        return y;
-    }
-
-    public void paint(Graphics g) {
+    public void paint(Graphics g, boolean lDebugmode) {
+        if (lDebugmode) {
+            g.setColor(Color.red);
+            g.drawString("length: " + length, x, y + 17);
+            g.drawString("x: " + x, x, y + 44);
+            g.drawString("width: " + (x + length), x, y + 58);
+            g.drawString("col: " + colTest, x, y + 30);
+            g.setColor(Color.blue);
+            g.drawRect(x - 1, y - 1, 2, 2);
+            g.drawRect(x - 1, y + 6, 2, 2);
+            g.drawRect(x + length - 1, y - 1, 2, 2);
+            g.drawRect(x + length - 1, y + 6, 2, 2);
+            if (left && colTest) {
+                g.fillRoundRect(x - length, y, length, 6, 7, 7);
+            } else if (colTest) {
+                g.fillRoundRect(x + length, y, length, 6, 7, 7);
+            }
+        }
         g.setColor(new Color(120, 45, 45));
-        g.drawLine(x1, y, (x1 + x2), y);
-
-        g.fillRect(x1, y, x2, 6);
+        g.fillRoundRect(x, y, length, 6, 7, 7);
+        g.setColor(Color.red);
     }
 
     public void placeHighest(int hY) {
         Random rand = new Random();
         y = hY - (rand.nextInt((150 - 20) + 1) + 20);
-        x1 = rand.nextInt((490 + 10) + 1) - 10;
-        L = rand.nextInt((70 - 20) + 1) + 20;
-        x2 = x1 + L;
+        x = rand.nextInt((490 + 10) + 1) - 10;
+        length = rand.nextInt((70 - 20) + 1) + 20;
     }
 }
