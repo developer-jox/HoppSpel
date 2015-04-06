@@ -28,7 +28,6 @@ public class Monster {
     int width = 10;
 
     int vx = 2;
-    int l;
 
     public Monster() {
 
