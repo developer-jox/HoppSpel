@@ -18,6 +18,9 @@ package main;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  *
@@ -25,8 +28,11 @@ import java.awt.Graphics;
  */
 public class Player {
 
-    int x = 100;
-    int y = 300;
+    int x = 504 / 2;
+    int y = 500;
+
+    int oldX, oldY;
+    LinkedList<Point> oldPosList = new LinkedList<>();
 
     int vx;
     int vy;
@@ -40,7 +46,6 @@ public class Player {
     }
 
     //Hastigheter
-
     public void setVx(int input) {
         vx = input;
     }
@@ -65,21 +70,19 @@ public class Player {
         return vx;
     }
 
-    public void move() {
-        x += vx;
-        y += vy;
-    }
-
     public void moveX() {
+        Point oldPos = new Point(x, y);
+        oldPosList.add(oldPos);
         x += vx;
     }
 
     public void moveY() {
+        Point oldPos = new Point(x, y);
+        oldPosList.add(oldPos);
         y += vy;
     }
 
     //positioner
-
     public void setX(int input) {
         x = input;
     }
@@ -100,7 +103,44 @@ public class Player {
         c = a;
     }
 
-    public void paint(Graphics g) {
+    public void translateY(int vy, boolean lDebugmode) {
+        if (lDebugmode) {
+            ListIterator<Point> listIterator = oldPosList.listIterator();
+            Point p = null;
+            while (listIterator.hasNext()) {
+                p = listIterator.next();
+                p.y -= vy;
+            }
+        }
+    }
+
+    public void removeOldPos(boolean lDebugmode) {
+        if (lDebugmode) {
+            ListIterator<Point> listIterator = oldPosList.listIterator();
+            Point p = null;
+            while (listIterator.hasNext()) {
+                p = listIterator.next();
+                if (p.y > 500) {
+                    listIterator.remove();
+                }
+            }
+        }
+    }
+
+    public void paint(Graphics g, boolean lDebugmode) {
+        if (lDebugmode) {
+            g.setColor(Color.MAGENTA);
+            ListIterator<Point> listIterator = oldPosList.listIterator();
+            Point p1 = null, p2 = null;
+            while (listIterator.hasNext()) {
+                p1 = listIterator.next();
+                if (p2 != null) {
+                    g.drawLine(p1.x, p1.y, p2.x, p2.y);
+                }
+                p2 = p1;
+            }
+        }
+
         g.setColor(c);
 
         if (x > 500) {
