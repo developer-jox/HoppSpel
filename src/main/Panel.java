@@ -17,6 +17,7 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -40,6 +41,8 @@ public class Panel extends JPanel {
 
     //annat
     long time;
+    long frameTic = 0, fps = 0;
+    long fpsT = System.nanoTime();
     int score = 0;
     Color background = new Color(130, 180, 250);
 
@@ -49,8 +52,10 @@ public class Panel extends JPanel {
     Decorations dec = new Decorations();
 
     Boolean gameOver = false;
+    boolean debugmode = false;
 
     public Panel() {
+        setDoubleBuffered(true);
         initComponents();
         start();
     }
@@ -76,12 +81,16 @@ public class Panel extends JPanel {
             //ser till att programmet håller en stabil uppdateringsfrekvens
             time = (System.nanoTime() - time) / 1000000;
             try {
-                Thread.sleep(17 - time);
+                Thread.sleep(17 - time); //17ms sleep ~ 60fps
             } catch (InterruptedException ex) {
             }
-
-            jLabel1.setText(Integer.toString(score));
-
+            jLabel1.setText("Score: " + Integer.toString(score));
+            
+            if (System.nanoTime() - fpsT >= 1000000000) {
+                fps = frameTic;
+                fpsT = System.nanoTime();
+                frameTic = 0;
+            }
         }
 
     }
@@ -92,7 +101,6 @@ public class Panel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         //suddar och ritar om varje frame
-        g2.clearRect(0, 0, 1000, 1000);
 
         super.setBackground(background);
         super.paintComponent(g2);
@@ -100,10 +108,10 @@ public class Panel extends JPanel {
         dec.clouds(g2);
 
         for (int i = 0; i < nPlattform; i++) {
-            p[i].paint(g2);
+            p[i].paint(g2, debugmode);
         }
 
-        g2.drawLine(0, 500, 500, 500);
+//        g2.drawLine(0, 500, 500, 500);
         player.paint(g2);
 
         monster.paint(g2);
@@ -112,6 +120,12 @@ public class Panel extends JPanel {
 
         //ritar ut jlableln/poängräknaren
         super.paintChildren(g2);
+        if(debugmode) {
+            g2.setColor(Color.black);
+            g2.setFont(new Font("Dialog", Font.BOLD, 11));
+            g2.drawString("FPS: " + fps, 2, 40);
+        }
+        frameTic++;
     }
 
     //slumpar ut saker vid start
@@ -120,7 +134,7 @@ public class Panel extends JPanel {
         //skapar plattformerna
         int highestY = 500;
         for (int i = 0; i < nPlattform; i++) {
-            p[i] = new Platform(highestY);
+            p[i] = new Platform(highestY, 504);
             highestY = p[i].y;
         }
 
@@ -244,11 +258,15 @@ public class Panel extends JPanel {
             player.setVy(-14);
             nJumps++;
         } else if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
-            player.setVx(-4);
+            player.setVx(-6);
         } else if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
-            player.setVx(4);
+            player.setVx(6);
         } else if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
             player.setY(player.getY() + 1);
+        }
+        if (evt.getKeyCode() == 0) {
+            debugmode = !debugmode;
+            System.out.println("debugmode: " + debugmode);
         }
     }//GEN-LAST:event_formKeyPressed
 
