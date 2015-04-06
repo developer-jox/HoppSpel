@@ -32,21 +32,11 @@ public class Platform {
         width = lWidth;
         Random rand = new Random();
         y = hY - (rand.nextInt((150 - 60) + 1) + 60);
-        x = rand.nextInt((490 + 10) + 1) - 10;
+        x = rand.nextInt((490 + 10) + 1) + 10;
         length = rand.nextInt((120 - 60) + 1) + 60;
-        if (x < 0) {
-            x = x + length;
-            left = true;
-            colTest = true;
-        } else if (x + length > lWidth) {
-            x = x - length;
-            left = false;
-            colTest = true;
-        } else {
-            colTest = false;
-        }
-
+        checkIfOfTrack(lWidth);
     }
+
     public int getX1() {
         return x;
     }
@@ -82,10 +72,26 @@ public class Platform {
         g.setColor(Color.red);
     }
 
+    public void checkIfOfTrack(int lWidth) {
+        if (x < 0) {
+            x = x + length;
+            left = true;
+            colTest = true;
+        } else if (x + length > lWidth) {
+            x = x - length;
+            left = false;
+            colTest = true;
+        } else {
+            colTest = false;
+        }
+    }
+
     public void placeHighest(int hY) {
         Random rand = new Random();
         y = hY - (rand.nextInt((150 - 20) + 1) + 20);
-        x = rand.nextInt((490 + 10) + 1) - 10;
-        length = rand.nextInt((70 - 20) + 1) + 20;
+        x = rand.nextInt((490 + 10) + 1) + 10;
+        length = rand.nextInt((120 - 60) + 1) + 60;
+        checkIfOfTrack(width);
     }
+
 }
