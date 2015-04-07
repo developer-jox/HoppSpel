@@ -14,16 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ensak;
+package HoppSpel;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.util.Random;
 
-
 public class MinPanel extends javax.swing.JPanel {
     
-    //Variabler
+        //Variabler
     
     //saker till spelaren
     Spelare sp = new Spelare();
@@ -32,10 +31,10 @@ public class MinPanel extends javax.swing.JPanel {
     int hopp = 0; 
     
     //saker till platformar
-    int antalPlatformar = 40;
-    Platform[] p = new Platform[antalPlatformar];
+    int antalPlattformar = 40;
+    Platform[] p = new Platform[antalPlattformar];
     int lowestPlatform = 0;
-    int highestPlatform = antalPlatformar-1;
+    int highestPlatform = antalPlattformar-1;
     
     //annat
     long time;
@@ -52,7 +51,7 @@ public class MinPanel extends javax.swing.JPanel {
     
     public MinPanel() {
         initComponents();
-        start();
+        
     }
     
     
@@ -60,7 +59,8 @@ public class MinPanel extends javax.swing.JPanel {
     void run(){
         
         this.setFocusable(true);
-        dek.initClouds();
+        
+        start();
         
         while (!gameOver){
             
@@ -103,7 +103,7 @@ public class MinPanel extends javax.swing.JPanel {
         
         dek.clouds(g);
         
-        for (int i = 0; i < antalPlatformar; i++) {
+        for (int i = 0; i < antalPlattformar; i++) {
             p[i].paint(g);
         }
         
@@ -124,22 +124,26 @@ public class MinPanel extends javax.swing.JPanel {
         
         //skapar plattformerna
         int highestY = 500;
-        for (int i = 0; i < antalPlatformar; i++) {
+        for (int i = 0; i < antalPlattformar; i++) {
             p[i] = new Platform(highestY);
             highestY = p[i].y;
         }
+        
+        dek.initClouds();
         
         
     }
     
     private void HanteraPlatformer(){
         //platform hantering. Kollar om spelaren står på en platform
-        for (int i = 0; i < antalPlatformar; i++) {
-            if( sp.x > p[i].getX1() && sp.getx() < p[i].getX1()+p[i].getX2() &&
-                sp.y <= p[i].getY() && sp.gety() + sp.getvy() > p[i].getY()){
-
+        for (int i = 0; i < antalPlattformar; i++) {
+            if( sp.x > p[i].x1 && sp.x < p[i].x2 &&
+                sp.y <= p[i].y && sp.y + sp.vy >= p[i].y){
+                
+                
+                
                 sp.setvy(0);
-                sp.sety(p[i].getY()-sp.getvy());
+                sp.sety(p[i].getY());
                 hopp = 0;
                 break;
             }
@@ -149,11 +153,11 @@ public class MinPanel extends javax.swing.JPanel {
         //flyttar upp understa plattformen
         if(p[lowestPlatform].y-500 > sp.y){
             int highestY = p[highestPlatform].y;
-            p[lowestPlatform].placeHighest(highestY);
+            p[lowestPlatform] = new Platform(highestY);
             lowestPlatform++;
             highestPlatform++;
-            if(highestPlatform == antalPlatformar)highestPlatform = 0;
-            if(lowestPlatform == antalPlatformar)lowestPlatform = 0; 
+            if(highestPlatform == antalPlattformar)highestPlatform = 0;
+            if(lowestPlatform == antalPlattformar)lowestPlatform = 0; 
         }
         
     }
@@ -162,7 +166,7 @@ public class MinPanel extends javax.swing.JPanel {
         
         //flyttar allt nedåt när man är högt upp
         if(sp.y+sp.vy < 200){
-            for (int i = 0; i < antalPlatformar; i++) {
+            for (int i = 0; i < antalPlattformar; i++) {
                 p[i].y -= sp.vy;
             }
             dek.moveClouds(sp.y);

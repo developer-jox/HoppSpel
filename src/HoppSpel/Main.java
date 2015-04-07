@@ -14,22 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ensak;
+package HoppSpel;
 import java.awt.event.KeyListener;
 import  javax.swing.JFrame;
 
 
 
-public class EnSak extends JFrame {
+public class Main extends JFrame {
 
 
     public static void main(String[] args) {
-        new EnSak();
+        new Main();
         
         
     }
 
-    public EnSak() {
+    public Main() {
         super("asdf");
         setSize(504, 600);
         MinPanel panel = new MinPanel();
