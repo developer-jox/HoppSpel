@@ -64,12 +64,5 @@ public class Platform {
         g.fillRect(x1, y, L*2, 6);
     }
     
-    public void placeHighest(int hY){
-        Random rand = new Random();
-        y = hY - (rand.nextInt((150 - 20) + 1) + 20);
-        mitt = rand.nextInt((500 - 0) + 1) + 0;
-        L = rand.nextInt((100 - 40) + 1) + 40;
-        x1 = mitt - L;
-        x2 = mitt + L;
-    }
+
 }
