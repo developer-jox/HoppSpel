@@ -112,7 +112,7 @@ public class Panel extends JPanel {
         }
 
 //        g2.drawLine(0, 500, 500, 500);
-        player.paint(g2);
+        player.paint(g2, debugmode);
 
         monster.paint(g2);
 
