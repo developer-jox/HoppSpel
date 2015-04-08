@@ -63,7 +63,8 @@ public class Panel extends JPanel {
     //loopar allt
     void run() {
         this.setFocusable(true);
-        dec.initClouds();
+        
+        start();
 
         while (!gameOver) {
 
@@ -137,7 +138,7 @@ public class Panel extends JPanel {
             p[i] = new Platform(highestY, 504);
             highestY = p[i].y;
         }
-
+        dec.initClouds();
     }
 
     private void ManagePlatforms() {
@@ -156,15 +157,11 @@ public class Panel extends JPanel {
         //flyttar upp understa plattformen
         if (p[lowestPlatform].y - 500 > player.y) {
             int highestY = p[highestPlatform].y;
-            p[lowestPlatform].placeHighest(highestY);
+            p[lowestPlatform] = new Platform(highestY, 504);
             lowestPlatform++;
             highestPlatform++;
-            if (highestPlatform == nPlattforms) {
-                highestPlatform = 0;
-            }
-            if (lowestPlatform == nPlattforms) {
-                lowestPlatform = 0;
-            }
+            if (highestPlatform == nPlattforms)highestPlatform = 0;
+            if (lowestPlatform == nPlattforms)lowestPlatform = 0;   
         }
 
     }
