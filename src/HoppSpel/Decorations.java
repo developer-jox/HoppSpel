@@ -54,7 +54,7 @@ public class Decorations {
         }
     }
 
-    public void mark(Graphics g) {
+    public void ground(Graphics g) {
         g.setColor(new Color(102, 204, 0));
         g.fillRect(0, groundY, 500, 100);
     }
