@@ -31,6 +31,7 @@ public class Main extends JFrame {
 
     public Main() {
         super("asdf");
+        
         setSize(504, 600);
         MinPanel panel = new MinPanel();
         add(panel);

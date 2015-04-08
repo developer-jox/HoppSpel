@@ -29,6 +29,7 @@ public class Dekorationer {
     int highest = antal-1;
     int lowest = 0;
     
+    int markY = 500;
     
     public Dekorationer() {
         
@@ -36,7 +37,7 @@ public class Dekorationer {
     
     public void mark(Graphics g){
         g.setColor(new Color(102, 204, 0));
-        g.fillRect(0, 500, 500, 100);
+        g.fillRect(0, markY, 500, 100);
     }
     public void initClouds(){
         Random rand = new Random();

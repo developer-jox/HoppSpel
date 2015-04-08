@@ -46,16 +46,14 @@ public class MinPanel extends javax.swing.JPanel {
     
     Dekorationer dek = new Dekorationer();
     
-    Boolean gameOver = false;
-    
+    boolean gameOver = false;
+    boolean offGround = false;
     
     public MinPanel() {
         initComponents();
         
     }
     
-    
-    //loopar allt
     void run(){
         
         this.setFocusable(true);
@@ -88,6 +86,7 @@ public class MinPanel extends javax.swing.JPanel {
                 jLabel1.setText(Integer.toString(score));
 
         }
+        System.out.println("Game Over");
         
     }
     
@@ -106,8 +105,6 @@ public class MinPanel extends javax.swing.JPanel {
         for (int i = 0; i < antalPlattformar; i++) {
             p[i].paint(g);
         }
-        
-        g.drawLine(0, 500, 500, 500);
         sp.paint(g);
         
         mons.paint(g);
@@ -117,7 +114,6 @@ public class MinPanel extends javax.swing.JPanel {
         //ritar ut jlableln/poängräknaren
         super.paintChildren(g);
     }
-    
     
     //slumpar ut saker vid start
     private void start(){
@@ -139,8 +135,6 @@ public class MinPanel extends javax.swing.JPanel {
         for (int i = 0; i < antalPlattformar; i++) {
             if( sp.x > p[i].x1 && sp.x < p[i].x2 &&
                 sp.y <= p[i].y && sp.y + sp.vy >= p[i].y){
-                
-                
                 
                 sp.setvy(0);
                 sp.sety(p[i].getY());
@@ -169,7 +163,13 @@ public class MinPanel extends javax.swing.JPanel {
             for (int i = 0; i < antalPlattformar; i++) {
                 p[i].y -= sp.vy;
             }
+            
             dek.moveClouds(sp.y);
+            if(!offGround){
+                dek.markY -= sp.vy;
+                if (dek.markY > 600)offGround = true;
+            }
+            
             mons.moveY(sp.vy);
             sp.y = 200;
             score++;
@@ -190,14 +190,17 @@ public class MinPanel extends javax.swing.JPanel {
     
     private void Gravitation(){
         //hanterar gravitationen, stannar vid bottenlinjen
-        if(sp.gety() < 500) {
-            sp.addvy(1);
-        }
-        else {
-            sp.setvy(0);
-            sp.sety(500);
+        if (offGround || sp.y < dek.markY){
+            sp.vy += 1;
+        }else{
+            sp.y = dek.markY;
+            sp.vy = 0;
             hopp = 0;
         }
+        if(offGround && sp.y > 600){
+            gameOver = true;
+        }
+        
     }
     
     private void Collision(){
