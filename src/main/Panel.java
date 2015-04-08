@@ -30,14 +30,14 @@ public class Panel extends JPanel {
     //saker till spelaren
     Player player = new Player();
 
-    //håller reda på hur många gånger man hoppat sedan man nuddade mark/platform
+   //håller reda på hur många gånger man hoppat sedan man nuddade mark/platform
     int nJumps = 0;
 
     //saker till platformar
-    int nPlattform = 40;
-    Platform[] p = new Platform[nPlattform];
+    int nPlattforms = 40;
+    Platform[] p = new Platform[nPlattforms];
     int lowestPlatform = 0;
-    int highestPlatform = nPlattform - 1;
+    int highestPlatform = nPlattforms - 1;
 
     //annat
     long time;
@@ -68,7 +68,6 @@ public class Panel extends JPanel {
         while (!gameOver) {
 
             time = System.nanoTime();
-            repaint();
 
             ManagePlatforms();
 
@@ -85,12 +84,13 @@ public class Panel extends JPanel {
             } catch (InterruptedException ex) {
             }
             jLabel1.setText("Score: " + Integer.toString(score));
-            
+
             if (System.nanoTime() - fpsT >= 1000000000) {
                 fps = frameTic;
                 fpsT = System.nanoTime();
                 frameTic = 0;
             }
+            repaint();
         }
 
     }
@@ -107,7 +107,7 @@ public class Panel extends JPanel {
 
         dec.clouds(g2);
 
-        for (int i = 0; i < nPlattform; i++) {
+        for (int i = 0; i < nPlattforms; i++) {
             p[i].paint(g2, debugmode);
         }
 
@@ -120,7 +120,7 @@ public class Panel extends JPanel {
 
         //ritar ut jlableln/poängräknaren
         super.paintChildren(g2);
-        if(debugmode) {
+        if (debugmode) {
             g2.setColor(Color.black);
             g2.setFont(new Font("Dialog", Font.BOLD, 11));
             g2.drawString("FPS: " + fps, 2, 40);
@@ -133,7 +133,7 @@ public class Panel extends JPanel {
 
         //skapar plattformerna
         int highestY = 500;
-        for (int i = 0; i < nPlattform; i++) {
+        for (int i = 0; i < nPlattforms; i++) {
             p[i] = new Platform(highestY, 504);
             highestY = p[i].y;
         }
@@ -142,7 +142,7 @@ public class Panel extends JPanel {
 
     private void ManagePlatforms() {
         //platform hantering. Kollar om spelaren står på en platform
-        for (int i = 0; i < nPlattform; i++) {
+        for (int i = 0; i < nPlattforms; i++) {
             if (player.x > p[i].getX1() && player.getX() < p[i].getX1() + p[i].getX2()
                     && player.y <= p[i].getY() && player.getY() + player.getVy() > p[i].getY()) {
 
@@ -159,10 +159,10 @@ public class Panel extends JPanel {
             p[lowestPlatform].placeHighest(highestY);
             lowestPlatform++;
             highestPlatform++;
-            if (highestPlatform == nPlattform) {
+            if (highestPlatform == nPlattforms) {
                 highestPlatform = 0;
             }
-            if (lowestPlatform == nPlattform) {
+            if (lowestPlatform == nPlattforms) {
                 lowestPlatform = 0;
             }
         }
@@ -173,7 +173,10 @@ public class Panel extends JPanel {
 
         //flyttar allt nedåt när man är högt upp
         if (player.y + player.vy < 200) {
-            for (int i = 0; i < nPlattform; i++) {
+            player.translateY(player.vy, debugmode);
+            player.removeOldPos(debugmode);
+
+            for (int i = 0; i < nPlattforms; i++) {
                 p[i].y -= player.vy;
             }
             dec.moveClouds(player.y);
