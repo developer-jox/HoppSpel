@@ -18,7 +18,15 @@ package HoppSpel;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 public class Decorations {
 
@@ -27,11 +35,23 @@ public class Decorations {
     int cloudY[] = new int[number];
     int highest = number - 1;
     int lowest = 0;
-    
+
+    BufferedImage image[] = new BufferedImage[number];
+    BufferedImage cloud = null;
+
     int groundY = 500;
 
-    public Decorations() {
+    Random rnd = new Random();
 
+    String cloudURL = "../textures/cloud.png";
+
+    public Decorations() {
+        double cloudScale;
+        cloud = loadImage(cloudURL);
+        for (int i = 0; i < number; i++) {
+            cloudScale = rndRect(0.1, 1.0);
+            image[i] = resize(cloud, cloudScale);
+        }
     }
 
     public void mark(Graphics g) {
@@ -39,41 +59,42 @@ public class Decorations {
         g.fillRect(0, groundY, 500, 100);
     }
 
-    public void initClouds() {
-        Random rand = new Random();
+    public int rndRect(int min, int max) {
+        return rnd.nextInt(max - min) + min;
+    }
 
-        cloudX[0] = rand.nextInt((500 - 0) + 1) + 0;
-        cloudY[0] = rand.nextInt((300 - 200) + 1) + 200;
+    private double rndRect(double min, double max) {
+        return rnd.nextDouble() * (max - min) + min;
+    }
+
+    public void initClouds() {
+        cloudX[0] = rndRect(-500 * 2 / 3, 500 * 2 / 3);
+        cloudY[0] = rndRect(200, 300);
         for (int i = 1; i < number; i++) {
             //rand.nextInt((max - min) + 1) + min;
-            cloudX[i] = rand.nextInt((500 - 0) + 1) + 0;
-            cloudY[i] = cloudY[i - 1] - (rand.nextInt((200 - 100) + 1) + 100);
-
+            cloudX[i] = rndRect(-500 * 2 / 3, 500 * 2 / 3);
+            cloudY[i] = cloudY[i - 1] - rndRect(200, 300);
         }
 
     }
 
-    public void clouds(Graphics g) {
-        g.setColor(Color.white);
+    public void paintClouds(Graphics g) {
+//        g.setColor(Color.white);
         for (int i = 0; i < number; i++) {
-            g.fillOval(cloudX[i] - 30, cloudY[i], 40, 40);
-            g.fillOval(cloudX[i], cloudY[i], 40, 40);
-            g.fillOval(cloudX[i] + 30, cloudY[i], 40, 40);
-
-            g.fillOval(cloudX[i] - 15, cloudY[i] + 17, 40, 40);
-            g.fillOval(cloudX[i] + 15, cloudY[i] + 17, 40, 40);
+            g.drawImage(image[i], cloudX[i], cloudY[i], null);
         }
 
     }
 
-    public void moveClouds(int spY) {
-        Random rand = new Random();
+    public void moveClouds(int playerY) {
         for (int i = 0; i < number; i++) {
             cloudY[i]++;
         }
 
-        if (cloudY[lowest] - 500 > spY) {
-            cloudY[lowest] = cloudY[highest] - (rand.nextInt((200 - 100) + 1) + 100);
+        if (cloudY[lowest] - 500 > playerY) {
+            cloudY[lowest] = cloudY[highest] - rndRect(100, 200);
+            double cloudScale = rndRect(0.1, 1.0);
+            image[lowest] = resize(cloud, cloudScale);
             lowest++;
             highest++;
             if (lowest == number) {
@@ -86,5 +107,27 @@ public class Decorations {
 
     }
 
-    //public void hitta nåt mer kanske.
+    private BufferedImage loadImage(String imageURL) {
+        try {
+            File f = new File(getClass().getResource(imageURL).getPath());
+            BufferedImage localImage = ImageIO.read(f);
+            return localImage;
+
+        } catch (IOException ex) {
+            Logger.getLogger(Decorations.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    private BufferedImage resize(BufferedImage bImage, double wantedScale) {
+        BufferedImage localImage;
+        int width = (int) (bImage.getWidth() * wantedScale);
+        int height = (int) (bImage.getHeight() * wantedScale);
+        Image tmpImage = bImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        localImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = localImage.createGraphics();
+        g2.drawImage(tmpImage, 0, 0, null);
+        g2.dispose();
+        return localImage;
+    }
 }
