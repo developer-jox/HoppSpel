@@ -31,11 +31,13 @@ public class Player {
     int x = 504 / 2;
     int y = 500;
 
-//    int oldX, oldY;
-//    LinkedList<Point> oldPosList = new LinkedList<>();
+    int oldX, oldY;
+    LinkedList<Point> oldPosList = new LinkedList<>();
 
     int vx;
     int vy;
+
+    boolean debugmode = false;
 
     int r = 10;
 
@@ -62,6 +64,10 @@ public class Player {
         vy += input;
     }
 
+    public void setDebugmode(boolean lDebugmode) {
+        debugmode = lDebugmode;
+    }
+
     public int getVy() {
         return vy;
     }
@@ -71,14 +77,24 @@ public class Player {
     }
 
     public void moveX() {
-//        Point oldPos = new Point(x, y);
-//        oldPosList.add(oldPos);
+        Point oldPos = new Point(x, y);
+        if (debugmode) {
+            Point prevPos = oldPosList.peekLast();
+            if (prevPos == null || !prevPos.equals(oldPos)) {
+                oldPosList.add(oldPos);
+            }
+        }
         x += vx;
     }
 
     public void moveY() {
-//        Point oldPos = new Point(x, y);
-//        oldPosList.add(oldPos);
+        Point oldPos = new Point(x, y);
+        if (debugmode) {
+            Point prevPos = oldPosList.peekLast();
+            if (prevPos == null || !prevPos.equals(oldPos)) {
+                oldPosList.add(oldPos);
+            }
+        }
         y += vy;
     }
 
@@ -103,43 +119,45 @@ public class Player {
         c = a;
     }
 
-    public void translateY(int vy, boolean lDebugmode) {
-//        if (lDebugmode) {
-//            ListIterator<Point> listIterator = oldPosList.listIterator();
-//            Point p = null;
-//            while (listIterator.hasNext()) {
-//                p = listIterator.next();
-//                p.y -= vy;
-//            }
-//        }
+    public void translateY(int vy) {
+        if (debugmode) {
+            ListIterator<Point> listIterator = oldPosList.listIterator();
+            Point p = null;
+            while (listIterator.hasNext()) {
+                p = listIterator.next();
+                p.y -= vy;
+            }
+        }
     }
 
-    public void removeOldPos(boolean lDebugmode) {
-//        if (lDebugmode) {
-//            ListIterator<Point> listIterator = oldPosList.listIterator();
-//            Point p = null;
-//            while (listIterator.hasNext()) {
-//                p = listIterator.next();
-//                if (p.y > 500) {
-//                    listIterator.remove();
-//                }
-//            }
-//        }
+    public void removeOldPos() {
+        if (debugmode) {
+            ListIterator<Point> listIterator = oldPosList.listIterator();
+            Point p = null;
+            while (listIterator.hasNext()) {
+                p = listIterator.next();
+                if (p.y > 600 || oldPosList.size() > 10000) {
+                    listIterator.remove();
+                }
+            }
+        }
     }
 
-    public void paint(Graphics g, boolean lDebugmode) {
-//        if (lDebugmode) {
-//            g.setColor(Color.MAGENTA);
-//            ListIterator<Point> listIterator = oldPosList.listIterator();
-//            Point p1 = null, p2 = null;
-//            while (listIterator.hasNext()) {
-//                p1 = listIterator.next();
-//                if (p2 != null) {
-//                    g.drawLine(p1.x, p1.y, p2.x, p2.y);
-//                }
-//                p2 = p1;
-//            }
-//        }
+    public void paint(Graphics g) {
+        if (debugmode) {
+            g.setColor(Color.MAGENTA);
+            ListIterator<Point> listIterator = oldPosList.listIterator();
+            Point p1 = null, p2 = null;
+            while (listIterator.hasNext()) {
+                p1 = listIterator.next();
+                if (p2 != null) {
+                    if (p1.x < 500 && p1.x > 0 && p2.x < 500 && p2.x > 0) {
+                        g.drawLine(p1.x, p1.y, p2.x, p2.y);
+                    }
+                }
+                p2 = p1;
+            }
+        }
 
         g.setColor(c);
 
