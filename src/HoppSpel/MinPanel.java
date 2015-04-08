@@ -73,8 +73,6 @@ public class MinPanel extends javax.swing.JPanel {
             
             Gravitation();
             
-            
-            
             //ser till att programmet håller en stabil uppdateringsfrekvens
             time = (System.nanoTime()-time)/1000000;
                 try {
