@@ -111,7 +111,7 @@ public class Panel extends JPanel {
         super.setBackground(background);
         super.paintComponent(g2);
 
-        dec.clouds(g2);
+        dec.paintClouds(g2);
 
         for (int i = 0; i < nPlattforms; i++) {
             p[i].paint(g2, debugmode);
@@ -228,12 +228,13 @@ public class Panel extends JPanel {
     }
 
     private void Collision() {
-
-        if (monster.inBounds(player.x, player.y) || monster.inBounds(player.x, player.y - 2 * player.r)) {
-            player.setColor(Color.red);
-            gameOver = true;
-        } else {
-            player.setColor(Color.BLACK);
+        if (!noGravMode) {
+            if (monster.inBounds(player.x, player.y) || monster.inBounds(player.x, player.y - 2 * player.r)) {
+                player.setColor(Color.red);
+                gameOver = true;
+            } else {
+                player.setColor(Color.BLACK);
+            }
         }
 
     }
@@ -282,7 +283,7 @@ public class Panel extends JPanel {
                 player.setVy(-14);
                 nJumps++;
             }
-            if (player.vy > (-14) && noGravMode) {
+            if (player.vy > (-50) && noGravMode) {
                 player.setVy(player.vy - 2);
             }
         } else if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
