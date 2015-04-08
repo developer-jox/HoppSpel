@@ -54,6 +54,9 @@ public class Panel extends JPanel {
     boolean gameOver = false;
     boolean debugmode = false;
     boolean offGround = false;
+    boolean noGravMode = false;
+
+    int oldVy;
 
     public Panel() {
         setDoubleBuffered(true);
@@ -129,6 +132,10 @@ public class Panel extends JPanel {
             g2.drawString("FPS: " + fps, 2, 40);
         }
         frameTic++;
+        if (oldVy != player.vy && debugmode) {
+            System.out.println("vy: " + player.vy);
+            oldVy = player.vy;
+        }
     }
 
     //slumpar ut saker vid start
@@ -183,9 +190,11 @@ public class Panel extends JPanel {
                 p[i].y -= player.vy;
             }
             dec.moveClouds(player.y);
-            if(!offGround){
+            if (!offGround) {
                 dec.groundY -= player.vy;
-                if (dec.groundY > 600)offGround = true;
+                if (dec.groundY > 600) {
+                    offGround = true;
+                }
             }
             monster.moveY(player.vy);
             player.y = 200;
@@ -204,15 +213,17 @@ public class Panel extends JPanel {
     }
 
     private void Gravity() {
-        if (offGround || player.y < dec.groundY){
-            player.vy += 1;
-        }else{
-            player.y = dec.groundY;
-            player.vy = 0;
-            nJumps = 0;
-        }
-        if(offGround && player.y > 600){
-            gameOver = true;
+        if (!noGravMode) {
+            if (offGround || player.y < dec.groundY) {
+                player.vy += 1;
+            } else {
+                player.y = dec.groundY;
+                player.vy = 0;
+                nJumps = 0;
+            }
+            if (offGround && player.y > 600) {
+                gameOver = true;
+            }
         }
     }
 
@@ -267,18 +278,31 @@ public class Panel extends JPanel {
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_UP && nJumps <= 1) {
-            player.setVy(-14);
-            nJumps++;
+            if (!noGravMode) {
+                player.setVy(-14);
+                nJumps++;
+            }
+            if (player.vy > (-14) && noGravMode) {
+                player.setVy(player.vy - 2);
+            }
         } else if (evt.getKeyCode() == KeyEvent.VK_LEFT) {
             player.setVx(-6);
         } else if (evt.getKeyCode() == KeyEvent.VK_RIGHT) {
             player.setVx(6);
         } else if (evt.getKeyCode() == KeyEvent.VK_DOWN) {
             player.setY(player.getY() + 1);
+            if (noGravMode && player.vy < 0) {
+                player.setVy(player.vy + 2);
+            }
         }
         if (evt.getKeyCode() == 0) {
             debugmode = !debugmode;
+            noGravMode = false;
             System.out.println("debugmode: " + debugmode);
+        }
+        if (debugmode && evt.getKeyCode() == KeyEvent.VK_F1) {
+            noGravMode = !noGravMode;
+            System.out.println("noGravMode: " + noGravMode);
         }
     }//GEN-LAST:event_formKeyPressed
 
