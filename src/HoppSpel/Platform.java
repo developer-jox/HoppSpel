@@ -54,7 +54,7 @@ public class Platform {
             g.setColor(Color.red);
             g.drawString("length: " + length, x, y + 17);
             g.drawString("x: " + x, x, y + 44);
-            g.drawString("width: " + (x + length), x, y + 58);
+            g.drawString("x2: " + (x + length), x, y + 58);
             g.drawString("col: " + colTest, x, y + 30);
             g.setColor(Color.blue);
             g.drawRect(x - 1, y - 1, 2, 2);
