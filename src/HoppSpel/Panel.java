@@ -30,7 +30,7 @@ public class Panel extends JPanel {
     //saker till spelaren
     Player player = new Player();
 
-   //håller reda på hur många gånger man hoppat sedan man nuddade mark/platform
+    //håller reda på hur många gånger man hoppat sedan man nuddade mark/platform
     int nJumps = 0;
 
     //saker till platformar
@@ -51,8 +51,9 @@ public class Panel extends JPanel {
 
     Decorations dec = new Decorations();
 
-    Boolean gameOver = false;
+    boolean gameOver = false;
     boolean debugmode = false;
+    boolean offGround = false;
 
     public Panel() {
         setDoubleBuffered(true);
@@ -60,10 +61,10 @@ public class Panel extends JPanel {
         start();
     }
 
-    //loopar allt
     void run() {
+
         this.setFocusable(true);
-        
+
         start();
 
         while (!gameOver) {
@@ -93,6 +94,7 @@ public class Panel extends JPanel {
             }
             repaint();
         }
+        System.out.println("Game Over");
 
     }
 
@@ -160,8 +162,12 @@ public class Panel extends JPanel {
             p[lowestPlatform] = new Platform(highestY, 504);
             lowestPlatform++;
             highestPlatform++;
-            if (highestPlatform == nPlattforms)highestPlatform = 0;
-            if (lowestPlatform == nPlattforms)lowestPlatform = 0;   
+            if (highestPlatform == nPlattforms) {
+                highestPlatform = 0;
+            }
+            if (lowestPlatform == nPlattforms) {
+                lowestPlatform = 0;
+            }
         }
 
     }
@@ -177,6 +183,10 @@ public class Panel extends JPanel {
                 p[i].y -= player.vy;
             }
             dec.moveClouds(player.y);
+            if(!offGround){
+                dec.groundY -= player.vy;
+                if (dec.groundY > 600)offGround = true;
+            }
             monster.moveY(player.vy);
             player.y = 200;
             score++;
@@ -194,13 +204,15 @@ public class Panel extends JPanel {
     }
 
     private void Gravity() {
-        //hanterar gravitationen, stannar vid bottenlinjen
-        if (player.getY() < 500) {
-            player.addVy(1);
-        } else {
-            player.setVy(0);
-            player.setY(500);
+        if (offGround || player.y < dec.groundY){
+            player.vy += 1;
+        }else{
+            player.y = dec.groundY;
+            player.vy = 0;
             nJumps = 0;
+        }
+        if(offGround && player.y > 600){
+            gameOver = true;
         }
     }
 

@@ -27,6 +27,8 @@ public class Decorations {
     int cloudY[] = new int[number];
     int highest = number - 1;
     int lowest = 0;
+    
+    int groundY = 500;
 
     public Decorations() {
 
@@ -34,7 +36,7 @@ public class Decorations {
 
     public void mark(Graphics g) {
         g.setColor(new Color(102, 204, 0));
-        g.fillRect(0, 500, 500, 100);
+        g.fillRect(0, groundY, 500, 100);
     }
 
     public void initClouds() {
