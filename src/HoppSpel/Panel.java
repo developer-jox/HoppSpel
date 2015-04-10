@@ -118,11 +118,11 @@ public class Panel extends JPanel {
         }
 
 //        g2.drawLine(0, 500, 500, 500);
-        player.paint(g2, debugmode);
+        player.paint(g2);
 
         monster.paint(g2);
 
-        dec.mark(g2);
+        dec.ground(g2);
 
         //ritar ut jlableln/poängräknaren
         super.paintChildren(g2);
@@ -183,8 +183,8 @@ public class Panel extends JPanel {
 
         //flyttar allt nedåt när man är högt upp
         if (player.y + player.vy < 200) {
-            player.translateY(player.vy, debugmode);
-            player.removeOldPos(debugmode);
+            player.translateY(player.vy);
+            player.removeOldPos();
 
             for (int i = 0; i < nPlattforms; i++) {
                 p[i].y -= player.vy;
