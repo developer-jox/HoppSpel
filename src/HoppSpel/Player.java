@@ -164,15 +164,12 @@ public class Player {
         if (x > 500) {
             x = 0;
         } else if (x > 500 - r) {
-
             g.fillOval((x - r) - 500, y - 2 * r, 2 * r, 2 * r);
         } else if (x < 0) {
             x = 500;
-
         } else if (x - r < 0) {
             g.fillOval((x - r) + 500, y - 2 * r, 2 * r, 2 * r);
         }
-
         g.fillOval(x - r, y - 2 * r, 2 * r, 2 * r);
 
     }

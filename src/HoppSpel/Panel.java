@@ -41,7 +41,7 @@ public class Panel extends JPanel {
 
     //annat
     long time;
-    long frameTic = 0, fps = 0;
+    long frameTic = 0, fps = 0, fpsTarget = 60, fpsDelay = 0;
     long fpsT = System.nanoTime();
     int score = 0;
     Color background = new Color(130, 180, 250);
@@ -60,6 +60,7 @@ public class Panel extends JPanel {
 
     public Panel() {
         setDoubleBuffered(true);
+        requestFocus(true);
         initComponents();
         start();
     }
@@ -84,8 +85,14 @@ public class Panel extends JPanel {
 
             //ser till att programmet håller en stabil uppdateringsfrekvens
             time = (System.nanoTime() - time) / 1000000;
+            System.out.println("fpsTarget: " + fpsTarget);
+            System.out.println("1/fpsTarget: " + 1 / fpsTarget);
+            fpsDelay = (long) ((1.0 / fpsTarget) * 1000);
+            System.out.println("fpsDelay: " + fpsDelay);
             try {
-                Thread.sleep(17 - time); //17ms sleep ~ 60fps
+                if (fpsDelay - time > 0) {
+                    Thread.sleep((long) (fpsDelay - time)); //17ms sleep ~ 60fps
+                }
             } catch (InterruptedException ex) {
             }
             jLabel1.setText("Score: " + Integer.toString(score));
@@ -103,13 +110,11 @@ public class Panel extends JPanel {
 
     //ritar varje ny frame
     @Override
-    public void paint(Graphics g) {
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        super.setBackground(background);
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        //suddar och ritar om varje frame
-
-        super.setBackground(background);
-        super.paintComponent(g2);
 
         dec.paintClouds(g2);
 
@@ -117,7 +122,6 @@ public class Panel extends JPanel {
             p[i].paint(g2, debugmode);
         }
 
-//        g2.drawLine(0, 500, 500, 500);
         player.paint(g2);
 
         monster.paint(g2);
@@ -133,7 +137,6 @@ public class Panel extends JPanel {
         }
         frameTic++;
         if (oldVy != player.vy && debugmode) {
-            System.out.println("vy: " + player.vy);
             oldVy = player.vy;
         }
     }
@@ -299,6 +302,7 @@ public class Panel extends JPanel {
         if (evt.getKeyCode() == 0) {
             debugmode = !debugmode;
             noGravMode = false;
+            player.setDebugmode(debugmode);
             System.out.println("debugmode: " + debugmode);
         }
         if (debugmode && evt.getKeyCode() == KeyEvent.VK_F1) {

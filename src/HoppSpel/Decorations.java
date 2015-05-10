@@ -30,7 +30,7 @@ import javax.imageio.ImageIO;
 
 public class Decorations {
 
-    int number = 10;
+    int number = 20;
     int cloudX[] = new int[number];
     int cloudY[] = new int[number];
     int highest = number - 1;
@@ -83,7 +83,6 @@ public class Decorations {
         for (int i = 0; i < number; i++) {
             g.drawImage(image[i], cloudX[i], cloudY[i], null);
         }
-
     }
 
     public void moveClouds(int playerY) {
@@ -104,7 +103,6 @@ public class Decorations {
                 highest = 0;
             }
         }
-
     }
 
     private BufferedImage loadImage(String imageURL) {
